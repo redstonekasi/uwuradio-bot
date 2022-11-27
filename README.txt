@@ -18,8 +18,8 @@ Or self-host it like this:
  1. Fill out data/config.json (see Configuration)
  2. Install node-gyp
  3. Install dependencies: pnpm i
- 2. Build: pnpm build
- 2. Start the bot with: pnpm start
+ 4. Build: pnpm build
+ 5. Start the bot with: pnpm start
 
  Configuration
 ===============
