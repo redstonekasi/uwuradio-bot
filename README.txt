@@ -16,7 +16,9 @@ Invite the bot here: https://discord.com/oauth2/authorize?client_id=104579650553
 
 Or self-host it like this:
  1. Fill out data/config.json (see Configuration)
- 2. Run: pnpm build
+ 2. Install node-gyp
+ 3. Install dependencies: pnpm i
+ 2. Build: pnpm build
  2. Start the bot with: pnpm start
 
  Configuration
