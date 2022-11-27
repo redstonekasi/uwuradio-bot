@@ -19,7 +19,6 @@ export const player = createAudioPlayer({
 const songs: Record<string, Promise<Readable>> = {};
 
 export async function preload(url: string) {
-  console.log("preload", url)
   return songs[url] = new Promise((resolve, reject) => {
     const req = get(url, (res) => {
       resolve(res);
