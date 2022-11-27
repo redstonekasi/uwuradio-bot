@@ -84,12 +84,14 @@ export default new Command({
     }
 
     if (tokenRegex.test(JSON.stringify(result, null, 2))) {
-      await interaction.editReply({ embeds: [
-        createStatusEmbed({
-          type: "warn",
-          description: "The evaluation result was hidden because it contains a token."
-        }),
-      ]});
+      await interaction.editReply({
+        embeds: [
+          createStatusEmbed({
+            type: "warn",
+            description: "The evaluation result was hidden because it contains a token.",
+          }),
+        ],
+      });
       await interaction.followUp({ embeds: [embed], ephemeral: true });
     } else {
       await interaction.editReply({ embeds: [embed] });

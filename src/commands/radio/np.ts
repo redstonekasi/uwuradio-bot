@@ -9,12 +9,14 @@ export default new Command({
   async handler(interaction) {
     const song = currentSong.value;
     if (!song)
-    return void interaction.editReply({
-      embeds: [createStatusEmbed({
-        type: "error",
-        description: "The bot hasn't started streaming yet.",
-      })],
-    });
+      return void interaction.editReply({
+        embeds: [
+          createStatusEmbed({
+            type: "error",
+            description: "The bot hasn't started streaming yet.",
+          }),
+        ],
+      });
 
     const quotes = submitters.get(song.submitter)!.quotes;
     const embed = new EmbedBuilder({
@@ -26,8 +28,7 @@ export default new Command({
       color: resolveColor("Green"),
     });
 
-    if (song.artUrl)
-      embed.setThumbnail(song.artUrl);
+    if (song.artUrl) embed.setThumbnail(song.artUrl);
 
     if (quotes?.length)
       embed.setFooter({
@@ -48,7 +49,7 @@ export default new Command({
     });
 
     const progress = currentTime() - (currentStartedAt.value ?? 0);
-    const bar = `\`[${"=".repeat(progress / 24).padEnd(24)}]\``
+    const bar = `\`[${"=".repeat(progress / 24).padEnd(24)}]\``;
     embed.addFields({
       name: "Progress",
       value: bar,
@@ -58,4 +59,4 @@ export default new Command({
       embeds: [embed],
     });
   },
-})
+});

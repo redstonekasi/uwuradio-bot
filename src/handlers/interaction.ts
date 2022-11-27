@@ -8,7 +8,7 @@ import { commands } from "./command";
 export const safeReply = async (
   command: Command,
   interaction: ChatInputCommandInteraction,
-  reply: InteractionReplyOptions
+  reply: InteractionReplyOptions,
 ) => await interaction[command.noAck ? "reply" : "editReply"](reply);
 
 export default function interactionHandler() {
@@ -18,17 +18,18 @@ export default function interactionHandler() {
     const command = commands.find((i) => i.name === interaction.commandName);
     if (!command) return;
 
-    if (!command.noAck)
-      await interaction.deferReply({ ephemeral: command.ephemeral });
-    
+    if (!command.noAck) await interaction.deferReply({ ephemeral: command.ephemeral });
+
     if (command.su && !client.config.sudoers.includes(interaction.user.id))
-      return void await safeReply(command, interaction, {
-        embeds: [createStatusEmbed({
-          type: "error",
-          description: `${interaction.user.username} is not in the sudoers file. This incident will be reported.`,
-        })],
+      return void (await safeReply(command, interaction, {
+        embeds: [
+          createStatusEmbed({
+            type: "error",
+            description: `${interaction.user.username} is not in the sudoers file. This incident will be reported.`,
+          }),
+        ],
         ephemeral: command.ephemeral,
-      });
+      }));
 
     try {
       command.handler(interaction);
@@ -41,7 +42,8 @@ export default function interactionHandler() {
         embeds: [
           createStatusEmbed({
             type: "error",
-            description: "I ran into an error running that command! I've reported it, and it should be fixed soon.",
+            description:
+              "I ran into an error running that command! I've reported it, and it should be fixed soon.",
           }),
         ],
       });

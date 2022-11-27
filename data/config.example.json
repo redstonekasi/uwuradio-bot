@@ -1,9 +1,7 @@
 {
   "token": "<TOKEN>",
   "endpoint": "https://radio.alyxia.dev/",
-  "sudoers": [
-    "265064055490871297"
-  ],
+  "sudoers": ["265064055490871297"],
   "log": "<LOG CHANNEL>",
   "channels": {}
 }

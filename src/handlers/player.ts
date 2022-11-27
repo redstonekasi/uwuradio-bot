@@ -1,15 +1,20 @@
-import { createAudioPlayer, createAudioResource, NoSubscriberBehavior, StreamType } from "@discordjs/voice";
+import {
+  createAudioPlayer,
+  createAudioResource,
+  NoSubscriberBehavior,
+  StreamType,
+} from "@discordjs/voice";
 import { get } from "https";
 import { Readable } from "stream";
 import prism from "prism-media";
 
 export const player = createAudioPlayer({
   behaviors: {
-    noSubscriber: NoSubscriberBehavior.Play
-  }
+    noSubscriber: NoSubscriberBehavior.Play,
+  },
 });
 
-const songs: Map<string, Promise<Readable>> = new Map;
+const songs: Map<string, Promise<Readable>> = new Map();
 
 // Not sure if preloading is even needed considering that we stream the audio
 // and this just removes the overhead of the request itself.
@@ -37,24 +42,28 @@ export async function play(url: string, seek: number) {
   // otherwise, see: hours of pain in #general
   const transcoder = new prism.FFmpeg({
     args: [
-      "-analyzeduration", "0",
-      "-loglevel", "0",
-      "-f", "s16le",
-      "-ar", "48000",
-      "-ac", "2",
-      "-ss", seek.toString(),
+      "-analyzeduration",
+      "0",
+      "-loglevel",
+      "0",
+      "-f",
+      "s16le",
+      "-ar",
+      "48000",
+      "-ac",
+      "2",
+      "-ss",
+      seek.toString(),
     ],
   });
   const input = await (songs.get(url) ?? preload(url));
-  
+
   const opus = new prism.opus.Encoder({ rate: 48000, channels: 2, frameSize: 960 });
-  
-  input
-    .pipe(transcoder)
-    .pipe(opus);
+
+  input.pipe(transcoder).pipe(opus);
 
   const resource = createAudioResource(opus, {
-    inputType: StreamType.Opus
+    inputType: StreamType.Opus,
   });
   player.play(resource);
 }

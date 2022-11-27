@@ -15,7 +15,7 @@ export default async function rejoinHandler() {
       filter.push(guildId);
       continue;
     }
-    
+
     if (!channel || !channel.isVoiceBased()) {
       filter.push(guildId);
       continue;
@@ -23,13 +23,12 @@ export default async function rejoinHandler() {
 
     if (
       channel.members.size === 0 ||
-      channel.members.size === 1 &&
-      channel.members.has(client.user!.id)
-    ) continue;
-    
+      (channel.members.size === 1 && channel.members.has(client.user!.id))
+    )
+      continue;
+
     joinChannel(channel);
   }
 
-  for (const id of filter)
-    delete client.config.channels[id];
+  for (const id of filter) delete client.config.channels[id];
 }

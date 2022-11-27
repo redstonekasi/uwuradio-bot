@@ -39,15 +39,10 @@ export default async function syncHandler() {
 
       const correction = Math.min(-(startTime - currentTime()), 0);
       play(currentSong.value!.dlUrl, correction);
-    }, 1000 * (startTime - currentTime()))
+    }, 1000 * (startTime - currentTime()));
   });
 
-  hub.on("ReceiveState", (
-    current: Song,
-    currentStarted: number,
-    next: Song,
-    nextStart: number,
-  ) => {
+  hub.on("ReceiveState", (current: Song, currentStarted: number, next: Song, nextStart: number) => {
     currentSong.value = current;
     currentStartedAt.value = currentStarted;
     nextSong.value = next;

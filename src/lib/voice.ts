@@ -1,11 +1,14 @@
-import { entersState, getVoiceConnection, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
+import {
+  entersState,
+  getVoiceConnection,
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+} from "@discordjs/voice";
 import { Guild, VoiceBasedChannel } from "discord.js";
 import { player } from "../handlers/player";
 
 export function leaveChannel(channel: VoiceBasedChannel | Guild) {
-  const id = channel instanceof Guild
-    ? channel.id
-    : channel.guild.id;
+  const id = channel instanceof Guild ? channel.id : channel.guild.id;
 
   const connection = getVoiceConnection(id);
   if (!connection) return false;
@@ -47,9 +50,7 @@ export async function joinChannel(channel: VoiceBasedChannel) {
 }
 
 export function isInChannel(channel: VoiceBasedChannel | Guild) {
-  const id = channel instanceof Guild
-    ? channel.id
-    : channel?.guild.id;
+  const id = channel instanceof Guild ? channel.id : channel?.guild.id;
 
   const probe = getVoiceConnection(id);
   return !!probe;

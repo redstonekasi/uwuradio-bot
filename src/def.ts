@@ -1,4 +1,12 @@
-import { ApplicationCommandOptionData, ChatInputCommandInteraction, Client, ClientOptions, ColorResolvable, EmbedField, EmbedFooterOptions } from "discord.js";
+import {
+  ApplicationCommandOptionData,
+  ChatInputCommandInteraction,
+  Client,
+  ClientOptions,
+  ColorResolvable,
+  EmbedField,
+  EmbedFooterOptions,
+} from "discord.js";
 
 export interface CommandOptions {
   name: string;
@@ -30,18 +38,18 @@ export class Command {
     this.noAck = co.noAck;
     this.ephemeral = co.ephemeral;
     this.handler = co.handler;
-  };
+  }
 }
 
 export type StatusEmbedType = "info" | "success" | "warn" | "error";
 
 export interface StatusEmbedOptions {
-    type: StatusEmbedType;
-    title?: string;
-    description?: string;
-    fields?: EmbedField[];
-    footer?: EmbedFooterOptions;
-    color?: ColorResolvable;
+  type: StatusEmbedType;
+  title?: string;
+  description?: string;
+  fields?: EmbedField[];
+  footer?: EmbedFooterOptions;
+  color?: ColorResolvable;
 }
 
 export interface Song {
@@ -75,7 +83,7 @@ export interface RadioClientOptions extends ClientOptions {
 
 export class RadioClient extends Client {
   config: Config;
-  
+
   public constructor(options: RadioClientOptions) {
     super(options);
 
