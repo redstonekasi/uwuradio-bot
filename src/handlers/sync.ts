@@ -2,7 +2,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { computed, ref } from "@vue/reactivity";
 import { client } from "..";
 import { Song, Submitter } from "../def";
-import { play } from "./player";
+import { play, preload } from "./player";
 
 const api = (route: string) => new URL(route, client.config.endpoint).href;
 const currentTime = () => ~~(Date.now() / 1000);
@@ -28,6 +28,8 @@ export default async function syncHandler() {
   hub.on("BroadcastNext", (next: Song, startTime: number) => {
     nextSong.value = next;
     nextStartsAt.value = startTime;
+
+    preload(next.dlUrl);
 
     setTimeout(() => {
       currentSong.value = nextSong.value;

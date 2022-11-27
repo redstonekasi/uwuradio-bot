@@ -9,16 +9,27 @@ export const player = createAudioPlayer({
   }
 });
 
-const songs: Record<string, Promise<Readable>> = {};
+const songs: Map<string, Promise<Readable>> = new Map;
 
+// Not sure if preloading is even needed considering that we stream the audio
+// and this just removes the overhead of the request itself.
 export async function preload(url: string) {
-  return songs[url] = new Promise((resolve, reject) => {
+  // Delete all resources so they can be garbage collected, shouldn't be problem
+  // since the current song is stored by the player.
+  // Makes me wonder if we even need this to be a map, makes it nicer to work
+  // with though.
+  songs.clear();
+
+  const promise: Promise<Readable> = new Promise((resolve, reject) => {
     const req = get(url, (res) => {
       resolve(res);
     });
 
     req.on("error", reject);
   });
+
+  songs.set(url, promise);
+  return promise;
 }
 
 export async function play(url: string, seek: number) {
@@ -34,7 +45,7 @@ export async function play(url: string, seek: number) {
       "-ss", seek.toString(),
     ],
   });
-  const input = await (songs[url] ?? preload(url));
+  const input = await (songs.get(url) ?? preload(url));
   
   const opus = new prism.opus.Encoder({ rate: 48000, channels: 2, frameSize: 960 });
   
