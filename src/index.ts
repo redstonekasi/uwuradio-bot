@@ -6,6 +6,7 @@ import interactionHandler from "./handlers/interaction";
 import syncHandler from "./handlers/sync";
 import presenceHandler from "./handlers/presence";
 import rejoinHandler from "./handlers/rejoin";
+import voiceStateHandler from "./handlers/voice";
 
 export const client = new RadioClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -19,7 +20,9 @@ client.once("ready", async () => {
   await syncHandler();
   await presenceHandler();
 
-  await rejoinHandler();
+  // await rejoinHandler();
+
+  await voiceStateHandler();
 
   console.log("uwu radio is ready.");
 });
