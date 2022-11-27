@@ -21,7 +21,6 @@ client.once("ready", async () => {
   await presenceHandler();
 
   await rejoinHandler();
-
   await voiceStateHandler();
 
   console.log("uwu radio is ready.");

@@ -16,7 +16,7 @@ export function leaveChannel(channel: VoiceBasedChannel | Guild) {
 export async function joinChannel(channel: VoiceBasedChannel) {
   const probe = getVoiceConnection(channel.guild.id);
   if (probe) return;
-console.log("join", channel.id)
+
   const connection = joinVoiceChannel({
     channelId: channel.id,
     guildId: channel.guild.id,
