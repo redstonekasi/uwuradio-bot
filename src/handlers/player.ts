@@ -3,13 +3,6 @@ import { get } from "https";
 import { Readable } from "stream";
 import prism from "prism-media";
 
-// I'd like to rewrite this when I have more understanding of @discordjs/voice
-// internals, it doesn't really seem optimal right now.
-
-// It also seems to be a bit broken.
-// A good solution might be using node:net and ffmpeg so that preloading
-// is also supported.
-
 export const player = createAudioPlayer({
   behaviors: {
     noSubscriber: NoSubscriberBehavior.Play
@@ -29,6 +22,8 @@ export async function preload(url: string) {
 }
 
 export async function play(url: string, seek: number) {
+  // We have to manually transcode the mp3 to opus since discord.js breaks
+  // otherwise, see: hours of pain in #general
   const transcoder = new prism.FFmpeg({
     args: [
       "-analyzeduration", "0",
