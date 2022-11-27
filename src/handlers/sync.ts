@@ -5,7 +5,7 @@ import { Song, Submitter } from "../def";
 import { play, preload } from "./player";
 
 const api = (route: string) => new URL(route, client.config.endpoint).href;
-const currentTime = () => ~~(Date.now() / 1000);
+export const currentTime = () => ~~(Date.now() / 1000);
 
 export const submitters = new Map<string, Submitter>();
 

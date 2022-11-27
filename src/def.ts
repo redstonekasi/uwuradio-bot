@@ -47,10 +47,10 @@ export interface StatusEmbedOptions {
 export interface Song {
   name: string;
   artist: string;
-  album: string;
+  album?: string;
   dlUrl: string;
   sourceUrl: string;
-  artUrl: string;
+  artUrl?: string;
   submitter: string;
 }
 

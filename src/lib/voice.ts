@@ -49,7 +49,7 @@ export async function joinChannel(channel: VoiceBasedChannel) {
 export function isInChannel(channel: VoiceBasedChannel | Guild) {
   const id = channel instanceof Guild
     ? channel.id
-    : channel.guild.id;
+    : channel?.guild.id;
 
   const probe = getVoiceConnection(id);
   return !!probe;
