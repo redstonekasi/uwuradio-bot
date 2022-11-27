@@ -4,6 +4,7 @@ export interface CommandOptions {
   name: string;
   description: string;
   options?: ApplicationCommandOptionData[];
+  dm?: boolean;
   su?: boolean;
   noAck?: boolean;
   ephemeral?: boolean;
@@ -14,6 +15,7 @@ export class Command {
   public name: string;
   public description: string;
   public options?: ApplicationCommandOptionData[];
+  public dm?: boolean = true;
   public su?: boolean;
   public noAck?: boolean = false;
   public ephemeral?: boolean = false;
@@ -23,6 +25,7 @@ export class Command {
     this.name = co.name;
     this.description = co.description;
     this.options = co.options;
+    this.dm = co.dm;
     this.su = co.su;
     this.noAck = co.noAck;
     this.ephemeral = co.ephemeral;

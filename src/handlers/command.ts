@@ -8,6 +8,7 @@ export const convertToDiscordCommands = (commands: Command[]): ApplicationComman
   name: cmd.name,
   description: cmd.description,
   options: cmd.options,
+  dmPermission: cmd.dm,
   type: ApplicationCommandType.ChatInput,
 }));
 

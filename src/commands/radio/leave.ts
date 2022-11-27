@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChannelType, VoiceBasedChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, PermissionsBitField, VoiceBasedChannel } from "discord.js";
 import { Command } from "../../def";
 import { getVoiceConnection } from "@discordjs/voice";
 import { createStatusEmbed } from "../../lib/embeds";
@@ -7,7 +7,7 @@ import { client } from "../..";
 export default new Command({
   name: "leave",
   description: "Leave a voice channel.",
-  su: true,
+  dm: false,
   options: [
     {
       type: ApplicationCommandOptionType.Channel,
@@ -22,18 +22,27 @@ export default new Command({
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "This command must be run in a guild",
+          description: "This command must be run in a guild",
         })],
       });
 
     const member = await interaction.guild!.members.fetch(interaction.user.id);
+
+    if (!client.config.sudoers.includes(member.id) && !member.permissions.has(PermissionsBitField.Flags.ManageChannels))
+      return void interaction.editReply({
+        embeds: [createStatusEmbed({
+          type: "error",
+          description: "You don't have permission to run this command",
+        })],
+      });
+
     const channel = (interaction.options.getChannel("channel") ?? member.voice.channel) as VoiceBasedChannel;
 
     if (!channel || channel.type !== ChannelType.GuildVoice)
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "You must either supply a voice channel or be in one",
+          description: "You must either supply a voice channel or be in one",
         })],
       });
 
@@ -43,7 +52,7 @@ export default new Command({
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "I'm not in that channel!",
+          description: "I'm not in that channel!",
         })],
       });
 
@@ -53,7 +62,7 @@ export default new Command({
     interaction.editReply({
       embeds: [createStatusEmbed({
         type: "success",
-        title: "Successfully left the voice channel - goodbye!",
+        description: "Successfully left the voice channel - goodbye!",
       })],
     });
   }

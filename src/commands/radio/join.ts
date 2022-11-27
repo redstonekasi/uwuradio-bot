@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChannelType, VoiceBasedChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, PermissionsBitField, VoiceBasedChannel } from "discord.js";
 import { Command } from "../../def";
 import { joinVoiceChannel, entersState, VoiceConnectionStatus, getVoiceConnection } from "@discordjs/voice";
 import { player } from "../../handlers/player";
@@ -8,7 +8,7 @@ import { client } from "../..";
 export default new Command({
   name: "join",
   description: "Join a voice channel and start streaming radio.",
-  su: true,
+  dm: false,
   options: [
     {
       type: ApplicationCommandOptionType.Channel,
@@ -23,18 +23,27 @@ export default new Command({
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "This command must be run in a guild",
+          description: "This command must be run in a guild",
         })],
       });
 
     const member = await interaction.guild!.members.fetch(interaction.user.id);
+
+    if (!client.config.sudoers.includes(member.id) && !member.permissions.has(PermissionsBitField.Flags.ManageChannels))
+      return void interaction.editReply({
+        embeds: [createStatusEmbed({
+          type: "error",
+          description: "You don't have permission to run this command",
+        })],
+      });
+
     const channel = (interaction.options.getChannel("channel") ?? member.voice.channel) as VoiceBasedChannel;
 
     if (!channel || channel.type !== ChannelType.GuildVoice)
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "You must either supply a voice channel or be in one",
+          description: "You must either supply a voice channel or be in one",
         })],
       });
 
@@ -44,7 +53,7 @@ export default new Command({
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "I'm already in that channel!",
+          description: "I'm already in that channel!",
         })],
       });
 
@@ -61,7 +70,7 @@ export default new Command({
       return void interaction.editReply({
         embeds: [createStatusEmbed({
           type: "error",
-          title: "Couldn't connect to the voice channel",
+          description: "Couldn't connect to the voice channel",
         })],
       });
     }
@@ -80,13 +89,14 @@ export default new Command({
     });
 
     connection.subscribe(player);
-    client.config.channels = client.config.channels.filter((id) => id !== channel.id);
-    client.config.channels.push(channel.id);
+    // client.config.channels = client.config.channels.filter((id) => id !== channel.id);
+    if (!client.config.channels.includes(channel.id))
+      client.config.channels.push(channel.id);
 
     interaction.editReply({
       embeds: [createStatusEmbed({
         type: "success",
-        title: "Successfully joined the voice channel - enjoy your music!",
+        description: "Successfully joined the voice channel - enjoy your music!",
       })],
     });
   }
