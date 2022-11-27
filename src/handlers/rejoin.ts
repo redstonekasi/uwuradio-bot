@@ -1,3 +1,4 @@
+import { Channel } from "discord.js";
 import { client } from "..";
 import { joinChannel } from "../lib/voice";
 
@@ -6,7 +7,15 @@ export default async function rejoinHandler() {
 
   for (const guildId of Object.keys(client.config.channels)) {
     const channelId = client.config.channels[guildId];
-    const channel = await client.channels.fetch(channelId);
+    let channel: Channel | null;
+
+    try {
+      channel = await client.channels.fetch(channelId);
+    } catch {
+      filter.push(guildId);
+      continue;
+    }
+    
     if (!channel || !channel.isVoiceBased()) {
       filter.push(guildId);
       continue;
