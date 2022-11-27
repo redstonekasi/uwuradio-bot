@@ -1,4 +1,4 @@
-version: 3.8
+version: "3.8"
 
 services:
   uwuradio:
@@ -7,4 +7,4 @@ services:
     restart: unless-stopped
 
     volumes:
-      - ./data:/data # Should contain a config.json
+      - ./data:/app/data # Should contain a config.json
