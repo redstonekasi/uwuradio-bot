@@ -12,7 +12,14 @@ This is a bot for uwu radio (found at https://radio.uwu.network).
      Usage
 ===============
 
+   Hosted
+------------
 Invite the bot here: https://discord.com/oauth2/authorize?client_id=1045796505535135855&permissions=3145728&scope=bot%20applications.commands
+
+ Selfhosted
+------------
+Use the docker image "ghcr.io/redstonekasi/uwuradio-bot:main".
+An example docker-compose.yml is provided, read it for all the available options.
 
 Or self-host it like this:
  1. Fill out data/config.json (see Configuration)

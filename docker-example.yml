@@ -1,0 +1,10 @@
+version: 3.8
+
+services:
+  uwuradio:
+    container_name: uwuradio
+    image: ghcr.io/redstonekasi/uwuradio-bot:main
+    restart: unless-stopped
+
+    volumes:
+      - ./data:/data # Should contain a config.json
