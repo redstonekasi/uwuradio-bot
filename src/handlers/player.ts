@@ -1,4 +1,6 @@
-import { createAudioPlayer, createAudioResource, NoSubscriberBehavior, AudioResource } from "@discordjs/voice";
+import { createAudioPlayer, createAudioResource, NoSubscriberBehavior } from "@discordjs/voice";
+import { get } from "https";
+import { Readable } from "stream";
 
 // I'd like to rewrite this when I have more understanding of @discordjs/voice
 // internals, it doesn't really seem optimal right now.
@@ -13,19 +15,21 @@ export const player = createAudioPlayer({
   }
 });
 
-let buffer: AudioResource | undefined;
-let current: AudioResource | undefined;
+const songs: Record<string, Promise<Readable>> = {};
 
 export async function preload(url: string) {
-  buffer = createAudioResource(url);
+  console.log("preload", url)
+  return songs[url] = new Promise((resolve, reject) => {
+    const req = get(url, (res) => {
+      resolve(res);
+    });
+
+    req.on("error", reject);
+  });
 }
 
 export async function play(url: string, seek: number) {
-  if (!buffer) preload(url);
-  current = buffer;
-  buffer = undefined;
-  
-  const res = current!; // It exists now.
-  res.playbackDuration = seek * 1000;
-  player.play(res);
+  const stream = await (songs[url] ?? preload(url));
+  const resource = createAudioResource(stream);
+  player.play(resource);
 }
