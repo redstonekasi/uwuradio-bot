@@ -1,44 +1,26 @@
 import { client } from "..";
-import { joinVoiceChannel, entersState, VoiceConnectionStatus } from "@discordjs/voice";
-import { player } from "./player";
+import { joinChannel } from "../lib/voice";
 
 export default async function rejoinHandler() {
   const filter: string[] = [];
 
-  for (const id of client.config.channels) {
-    const channel = await client.channels.fetch(id);
-    if (!channel || !channel.isVoiceBased() || !channel.joinable) {
-      filter.push(id);
+  for (const guildId of Object.keys(client.config.channels)) {
+    const channelId = client.config.channels[guildId];
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isVoiceBased()) {
+      filter.push(guildId);
       continue;
     }
 
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: channel.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    });
-
-    try {
-      await entersState(connection, VoiceConnectionStatus.Ready, 30000);
-    } catch (err) {
-      connection.destroy();
-    }
-
-    connection.on(VoiceConnectionStatus.Disconnected, async () => {
-      try {
-        await Promise.race([
-          entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
-          entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
-        ]);
-        // Seems to be reconnecting to a new channel - ignore disconnect
-      } catch (error) {
-        // Seems to be a real disconnect which SHOULDN'T be recovered from
-        connection.destroy();
-      }
-    });
-
-    connection.subscribe(player);
+    if (
+      channel.members.size === 0 ||
+      channel.members.size === 1 &&
+      channel.members.has(client.user!.id)
+    ) continue;
+    
+    joinChannel(channel);
   }
 
-  client.config.channels = client.config.channels.filter((id) => !filter.includes(id));
+  for (const id of filter)
+    delete client.config.channels[id];
 }

@@ -20,7 +20,7 @@ client.once("ready", async () => {
   await syncHandler();
   await presenceHandler();
 
-  // await rejoinHandler();
+  await rejoinHandler();
 
   await voiceStateHandler();
 

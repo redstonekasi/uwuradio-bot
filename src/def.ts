@@ -66,7 +66,7 @@ export interface Config {
   endpoint: string;
   sudoers: string[];
   log: string;
-  channels: string[];
+  channels: Record<string, string>;
 }
 
 export interface RadioClientOptions extends ClientOptions {

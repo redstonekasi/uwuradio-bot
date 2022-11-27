@@ -3,25 +3,24 @@ import { isInChannel, joinChannel, leaveChannel } from "../lib/voice";
 
 export default async function voiceStateHandler() {
   client.on("voiceStateUpdate", async (oldState, newState) => {
-    if (newState.channel === null) { // Leaving channel
-      if (
-        oldState.channel === null ||
-        !client.config.channels.includes(oldState.channel.id) ||
-        oldState.id === client.user!.id &&
-        !oldState.channel.isVoiceBased() ||
-        oldState.channel.members.size !== 1
-      ) return;
+    if (oldState.member?.id === client.user?.id) return;
 
-      leaveChannel(oldState.channel);
-    } else if (
-      oldState.channel === null &&
-      client.config.channels.includes(newState.channel.id) &&
-      newState.id !== client.user!.id
-    ) { // Joining channel
+    if (
+      newState.channelId !== oldState.channelId &&
+      newState.channel?.id === client.config.channels[newState.guild.id]
+    ) {
+      // User joined a channel we care about.
       if (isInChannel(newState.channel)) return;
       try {
         joinChannel(newState.channel);
       } catch {}
+    } else if (
+      newState.channelId !== oldState.channelId &&
+      oldState.channel?.id === client.config.channels[oldState.guild.id]
+    ) {
+      // User left a channel we care about
+      if (oldState.channel.members.size === 1)
+        leaveChannel(oldState.channel);
     }
   });
 }
