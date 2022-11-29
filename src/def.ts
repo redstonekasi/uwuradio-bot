@@ -82,6 +82,7 @@ export interface Config {
 export interface SyncState {
   hub?: HubConnection;
   submitters: Map<string, Submitter>;
+  history: Array<[Song, number]>;
   song: {
     current: Ref<Song | undefined>;
     next: Ref<Song | undefined>;

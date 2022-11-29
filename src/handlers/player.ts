@@ -7,6 +7,9 @@ import {
 import { get } from "https";
 import { Readable } from "stream";
 import prism from "prism-media";
+import { reactive } from "@vue/reactivity";
+import { Song } from "../def";
+import { currentStartedAt } from "./sync";
 
 export const player = createAudioPlayer({
   behaviors: {
@@ -15,6 +18,7 @@ export const player = createAudioPlayer({
 });
 
 const songs: Map<string, Promise<Readable>> = new Map();
+export const history = reactive<Array<[Song, number]>>([]);
 
 // Not sure if preloading is even needed considering that we stream the audio
 // and this just removes the overhead of the request itself.
@@ -37,7 +41,7 @@ export async function preload(url: string) {
   return promise;
 }
 
-export async function play(url: string, seek: number) {
+export async function play(song: Song, seek: number) {
   // We have to manually transcode the mp3 to opus since discord.js breaks
   // otherwise, see: hours of pain in #general
   const transcoder = new prism.FFmpeg({
@@ -56,7 +60,7 @@ export async function play(url: string, seek: number) {
       seek.toString(),
     ],
   });
-  const input = await (songs.get(url) ?? preload(url));
+  const input = await (songs.get(song.dlUrl) ?? preload(song.dlUrl));
 
   const opus = new prism.opus.Encoder({ rate: 48000, channels: 2, frameSize: 960 });
 
@@ -66,4 +70,7 @@ export async function play(url: string, seek: number) {
     inputType: StreamType.Opus,
   });
   player.play(resource);
+
+  history.push([song, currentStartedAt.value!]);
+  if (history.length > 10) history.shift();
 }

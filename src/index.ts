@@ -7,12 +7,14 @@ import syncHandler, { currentSong, currentStartedAt, nextSong, nextStartsAt, sub
 import presenceHandler from "./handlers/presence";
 import rejoinHandler from "./handlers/rejoin";
 import voiceStateHandler from "./handlers/voice";
+import { history } from "./handlers/player";
 
 export const client = new RadioClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
   config: getReactiveConfig(),
   sync: {
     submitters,
+    history,
     song: {
       current: currentSong,
       next: nextSong,

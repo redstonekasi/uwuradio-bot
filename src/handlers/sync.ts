@@ -40,7 +40,7 @@ export default async function syncHandler() {
       nextStartsAt.value = undefined;
 
       const correction = Math.min(-(startTime - currentTime()), 0);
-      play(currentSong.value!.dlUrl, correction);
+      play(currentSong.value!, correction);
     }, 1000 * (startTime - currentTime()));
   });
 
@@ -50,7 +50,7 @@ export default async function syncHandler() {
     nextSong.value = next;
     nextStartsAt.value = nextStart;
 
-    play(current.dlUrl, seekPos.value!);
+    play(current, seekPos.value!);
   });
 
   // hub.on("ReceiveSeekPos", (time: number) => {
