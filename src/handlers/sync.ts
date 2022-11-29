@@ -21,7 +21,9 @@ const seekPos = computed(() => {
 
 export default async function syncHandler() {
   const hub = new HubConnectionBuilder()
-    .withAutomaticReconnect(new Array(20).fill(10000))
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: () => 10000,
+    })
     .withUrl(api("/sync"))
     .build();
 
@@ -69,4 +71,6 @@ export default async function syncHandler() {
 
   await hub.start();
   await handler();
+
+  return hub;
 }

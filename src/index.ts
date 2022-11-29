@@ -3,7 +3,7 @@ import { RadioClient } from "./def";
 import { getReactiveConfig } from "./lib/config";
 import commandHandler from "./handlers/command";
 import interactionHandler from "./handlers/interaction";
-import syncHandler from "./handlers/sync";
+import syncHandler, { currentSong, currentStartedAt, nextSong, nextStartsAt, submitters } from "./handlers/sync";
 import presenceHandler from "./handlers/presence";
 import rejoinHandler from "./handlers/rejoin";
 import voiceStateHandler from "./handlers/voice";
@@ -11,13 +11,22 @@ import voiceStateHandler from "./handlers/voice";
 export const client = new RadioClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
   config: getReactiveConfig(),
+  sync: {
+    submitters,
+    song: {
+      current: currentSong,
+      next: nextSong,
+      currentStartedAt,
+      nextStartsAt,
+    },
+  },
 });
 
 client.once("ready", async () => {
   await commandHandler();
   await interactionHandler();
 
-  await syncHandler();
+  client.sync.hub = await syncHandler();
   await presenceHandler();
 
   await rejoinHandler();

@@ -1,3 +1,5 @@
+import { HubConnection } from "@microsoft/signalr";
+import { Ref } from "@vue/reactivity";
 import {
   ApplicationCommandOptionData,
   ChatInputCommandInteraction,
@@ -77,16 +79,30 @@ export interface Config {
   channels: Record<string, string>;
 }
 
+export interface SyncState {
+  hub?: HubConnection;
+  submitters: Map<string, Submitter>;
+  song: {
+    current: Ref<Song | undefined>;
+    next: Ref<Song | undefined>;
+    currentStartedAt: Ref<number | undefined>;
+    nextStartsAt: Ref<number | undefined>;
+  };
+}
+
 export interface RadioClientOptions extends ClientOptions {
   config: Config;
+  sync: SyncState
 }
 
 export class RadioClient extends Client {
   config: Config;
+  sync: SyncState;
 
   public constructor(options: RadioClientOptions) {
     super(options);
 
     this.config = options.config;
+    this.sync = options.sync;
   }
 }
