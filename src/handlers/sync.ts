@@ -21,7 +21,7 @@ export const serverOnline: () => Promise<void> = () => new Promise(function hand
 
 const seekPos = computed(() => {
   const startTime = currentStartedAt.value;
-  return startTime ? currentTime() - startTime : undefined;
+  return startTime ? currentTime() - startTime : 0;
 });
 
 export default async function syncHandler() {
@@ -55,7 +55,7 @@ export default async function syncHandler() {
     nextSong.value = next;
     nextStartsAt.value = nextStart;
 
-    play(current, seekPos.value!);
+    play(current, seekPos.value);
   });
 
   // hub.on("ReceiveSeekPos", (time: number) => {
