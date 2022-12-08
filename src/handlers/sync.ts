@@ -14,6 +14,11 @@ export const nextSong = ref<Song>();
 export const currentStartedAt = ref<number>();
 export const nextStartsAt = ref<number>();
 
+export const serverOnline: () => Promise<void> = () => new Promise(function handler (resolve, reject) {
+  const retry = () => setTimeout(handler, 500, resolve, reject);
+  fetch(api("/api/ping")).then((val) => val.ok ? resolve() : retry()).catch(retry);
+});
+
 const seekPos = computed(() => {
   const startTime = currentStartedAt.value;
   return startTime ? currentTime() - startTime : undefined;

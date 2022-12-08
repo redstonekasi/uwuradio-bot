@@ -3,7 +3,7 @@ import { RadioClient } from "./def";
 import { getReactiveConfig } from "./lib/config";
 import commandHandler from "./handlers/command";
 import interactionHandler from "./handlers/interaction";
-import syncHandler, { currentSong, currentStartedAt, nextSong, nextStartsAt, submitters } from "./handlers/sync";
+import syncHandler, { currentSong, currentStartedAt, nextSong, nextStartsAt, serverOnline, submitters } from "./handlers/sync";
 import presenceHandler from "./handlers/presence";
 import rejoinHandler from "./handlers/rejoin";
 import voiceStateHandler from "./handlers/voice";
@@ -37,4 +37,4 @@ client.once("ready", async () => {
   console.log("uwu radio is ready.");
 });
 
-client.login(client.config.token);
+serverOnline().then(() => client.login(client.config.token));
