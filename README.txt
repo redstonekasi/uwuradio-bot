@@ -23,10 +23,9 @@ An example docker-compose.yml is provided, read it for all the available options
 
 Or self-host it like this:
  1. Fill out data/config.json (see Configuration)
- 2. Install node-gyp
- 3. Install dependencies: pnpm i
- 4. Build: pnpm build
- 5. Start the bot with: pnpm start
+ 2. Install dependencies: pnpm i
+ 3. Build: pnpm build
+ 4. Start the bot with: pnpm start
 
  Configuration
 ===============
