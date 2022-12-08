@@ -48,12 +48,12 @@ export default new Command({
       inline: true,
     });
 
-    const progress = currentTime() - (currentStartedAt.value ?? 0);
-    const bar = `\`[${"=".repeat(progress / 24).padEnd(24)}]\``;
-    embed.addFields({
-      name: "Progress",
-      value: bar,
-    });
+    // const progress = currentTime() - (currentStartedAt.value ?? 0);
+    // const bar = `\`[${"=".repeat(progress / 24).padEnd(24)}]\``;
+    // embed.addFields({
+    //   name: "Progress",
+    //   value: bar,
+    // });
 
     await interaction.editReply({
       embeds: [embed],
