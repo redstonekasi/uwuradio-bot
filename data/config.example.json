@@ -1,6 +1,6 @@
 {
   "token": "<TOKEN>",
-  "endpoint": "https://radio.alyxia.dev/",
+  "endpoint": "https://radio.k6.tf/",
   "sudoers": ["265064055490871297"],
   "log": "<LOG CHANNEL>",
   "channels": {}
