@@ -37,7 +37,7 @@ export default new Command({
     },
   ],
   async handler(interaction) {
-    const code = interaction.options.getString("code", true);
+    let code = interaction.options.getString("code", true);
     const silent = interaction.options.getBoolean("silent") ?? false;
 
     await interaction.deferReply({ ephemeral: silent });
@@ -49,6 +49,21 @@ export default new Command({
     let embed;
 
     try {
+      // somewhat adapted from kyzas implicit return
+      code = code.trim();
+      if (code.endsWith(";")) code = code.slice(0, -1);
+      const semicolon = code.lastIndexOf(";");
+      let lastExpr = "";
+      if (semicolon > -1) { // multiple statements
+        lastExpr = code.slice(semicolon + 1);
+        code = code.slice(0, semicolon + 1);
+      } else {
+        lastExpr = code;
+        if (lastExpr.startsWith("return ")) lastExpr = lastExpr.slice(7);
+        code = "";
+      }
+      code = `${code}${lastExpr && `return ${lastExpr.trim()}`};`;
+
       result = await AsyncFunction(
         "client",
         "interaction",
