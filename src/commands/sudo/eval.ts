@@ -1,10 +1,21 @@
+import { ref } from "@vue/reactivity";
 import { ApplicationCommandOptionType, codeBlock } from "discord.js";
+import { inspect, InspectOptionsStylized } from "util";
 import { client } from "../..";
 import { Command } from "../../def";
 import { createStatusEmbed } from "../../lib/embeds";
 
 const AsyncFunction = async function () {}.constructor;
 const tokenRegex = /(mfa\.[a-z0-9_-]{20,})|([a-z0-9_-]{23,28}\.[a-z0-9_-]{6,7}\.[a-z0-9_-]{27})/i;
+
+ref().constructor.prototype[inspect.custom] = function (depth: number, options: InspectOptionsStylized) {
+  if (depth < 0) return options.stylize("[VueRef]", "special");
+  const inner = inspect(this.value, {
+    ...options,
+    depth: options.depth ? options.depth - 1 : null,
+  });
+  return `${options.stylize("VueRef", "special")}<${inner}>`;
+}
 
 // taken from hut
 export default new Command({
@@ -59,7 +70,9 @@ export default new Command({
         embed.addFields([
           {
             name: "Result",
-            value: codeBlock("js", JSON.stringify(result, null, 2).substring(0, 1000)),
+            value: codeBlock("ansi", inspect(result, {
+              colors: true,
+            }).substring(0, 1000)),
             inline: false,
           },
         ]);
@@ -83,7 +96,7 @@ export default new Command({
       });
     }
 
-    if (tokenRegex.test(JSON.stringify(result, null, 2))) {
+    if (!silent && tokenRegex.test(inspect(result))) {
       await interaction.editReply({
         embeds: [
           createStatusEmbed({
