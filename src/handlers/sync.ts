@@ -32,7 +32,9 @@ export default async function syncHandler() {
     .withUrl(api("/sync"))
     .build();
 
-  hub.on("BroadcastNext", (next: Song, startTime: number) => {
+  hub.on("BroadcastNext", (next: Song, startTime: number, channel?: string) => {
+    if (channel) return;
+
     nextSong.value = next;
     nextStartsAt.value = startTime;
 
@@ -49,7 +51,9 @@ export default async function syncHandler() {
     }, 1000 * (startTime - currentTime()));
   });
 
-  hub.on("ReceiveState", (current: Song, currentStarted: number, next: Song, nextStart: number) => {
+  hub.on("ReceiveState", (current: Song, currentStarted: number, next: Song, nextStart: number, channel?: string) => {
+    if (channel) return;
+
     currentSong.value = current;
     currentStartedAt.value = currentStarted;
     nextSong.value = next;
