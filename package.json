@@ -11,17 +11,17 @@
   "author": "redstonekasi",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@types/node": "^18.11.19",
-    "rimraf": "^4.1.2",
-    "tsc-watch": "^6.0.0",
-    "typescript": "^4.9.5"
+    "@types/node": "^18.11.9",
+    "rimraf": "^3.0.2",
+    "tsc-watch": "^5.0.3",
+    "typescript": "^4.9.3"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.8.0",
-    "@discordjs/voice": "^0.14.0",
-    "@microsoft/signalr": "^7.0.2",
-    "@vue/reactivity": "^3.2.47",
-    "discord.js": "^14.7.1",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.13.0",
+    "@microsoft/signalr": "^7.0.0",
+    "@vue/reactivity": "^3.2.45",
+    "discord.js": "^14.6.0",
     "libsodium-wrappers": "^0.7.10",
     "prism-media": "^1.3.4"
   }
