@@ -32,15 +32,13 @@ export default async function syncHandler() {
     .withUrl(api("/sync"))
     .build();
 
-  hub.on("BroadcastNext", (next: Song, startTime: number, channel?: string) => {
-    if (channel) return;
+  let scheduleTimeout: NodeJS.Timeout;
+  function scheduleNext(startTime: number) {
+    if (nextSong.value === undefined) return;
+    preload(nextSong.value.dlUrl);
 
-    nextSong.value = next;
-    nextStartsAt.value = startTime;
-
-    preload(next.dlUrl);
-
-    setTimeout(() => {
+    clearTimeout(scheduleTimeout);
+    scheduleTimeout = setTimeout(() => {
       currentSong.value = nextSong.value;
       currentStartedAt.value = nextStartsAt.value;
       nextSong.value = undefined;
@@ -49,6 +47,15 @@ export default async function syncHandler() {
       const correction = Math.min(-(startTime - currentTime()), 0);
       play(currentSong.value!, correction);
     }, 1000 * (startTime - currentTime()));
+  }
+
+  hub.on("BroadcastNext", (next: Song, startTime: number, channel?: string) => {
+    if (channel) return;
+
+    nextSong.value = next;
+    nextStartsAt.value = startTime;
+
+    scheduleNext(startTime);
   });
 
   hub.on("ReceiveState", (current: Song, currentStarted: number, next: Song, nextStart: number, channel?: string) => {
@@ -60,11 +67,9 @@ export default async function syncHandler() {
     nextStartsAt.value = nextStart;
 
     play(current, seekPos.value);
+    if (nextStartsAt.value! - currentTime() < 30)
+      scheduleNext(nextStartsAt.value!);
   });
-
-  // hub.on("ReceiveSeekPos", (time: number) => {
-  //   currentStartedAt.value = time;
-  // });
 
   async function handler() {
     await fetch(api("/api/data"))

@@ -71,6 +71,6 @@ export async function play(song: Song, seek: number) {
   });
   player.play(resource);
 
-  history.push([song, currentStartedAt.value!]);
-  if (history.length > 10) history.shift();
+  history.unshift([song, currentStartedAt.value!]);
+  if (history.length > 10) history.pop();
 }
