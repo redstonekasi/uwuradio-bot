@@ -24,9 +24,9 @@ export default new Command({
     const quotes = submitters.get(song.submitter)!.quotes;
     const embed = new EmbedBuilder({
       author: {
-        name: song.name,
+        name: song.artist,
       },
-      title: song.artist,
+      title: song.name,
       url: song.sourceUrl,
       color: resolveColor("Green"),
     });
