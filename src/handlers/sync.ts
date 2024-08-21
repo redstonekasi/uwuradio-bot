@@ -1,8 +1,7 @@
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import { computed, ref } from "@vue/reactivity";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { client } from "..";
 import { Song, Submitter } from "../def";
-import { play, preload } from "./player";
 
 const api = (route: string) => new URL(route, client.config.endpoint).href;
 export const currentTime = () => ~~(Date.now() / 1000);
@@ -24,6 +23,8 @@ const seekPos = computed(() => {
   return startTime ? currentTime() - startTime : 0;
 });
 
+export const history = reactive<Array<[Song, number]>>([]);
+
 export default async function syncHandler() {
   const hub = new HubConnectionBuilder()
     .withAutomaticReconnect({
@@ -35,8 +36,7 @@ export default async function syncHandler() {
   let scheduleTimeout: NodeJS.Timeout;
   function scheduleNext(startTime: number) {
     if (nextSong.value === undefined) return;
-    preload(nextSong.value.dlUrl);
-
+    
     clearTimeout(scheduleTimeout);
     scheduleTimeout = setTimeout(() => {
       currentSong.value = nextSong.value;
@@ -44,8 +44,8 @@ export default async function syncHandler() {
       nextSong.value = undefined;
       nextStartsAt.value = undefined;
 
-      const correction = Math.min(-(startTime - currentTime()), 0);
-      play(currentSong.value!, correction);
+      history.unshift([currentSong.value!, currentStartedAt.value!]);
+      if (history.length > 10) history.pop();    
     }, 1000 * (startTime - currentTime()));
   }
 
@@ -66,7 +66,6 @@ export default async function syncHandler() {
     nextSong.value = next;
     nextStartsAt.value = nextStart;
 
-    play(current, seekPos.value);
     if (nextStartsAt.value! - currentTime() < 30)
       scheduleNext(nextStartsAt.value!);
   });

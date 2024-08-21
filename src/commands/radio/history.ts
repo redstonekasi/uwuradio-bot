@@ -1,6 +1,6 @@
 import { bold, EmbedBuilder, hyperlink, time, TimestampStyles } from "discord.js";
 import { Command } from "../../def";
-import { history } from "../../handlers/player";
+import { history } from "../../handlers/sync";
 
 export default new Command({
   name: "history",

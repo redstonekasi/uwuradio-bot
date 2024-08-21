@@ -3,11 +3,8 @@ import { RadioClient } from "./def";
 import { getReactiveConfig } from "./lib/config";
 import commandHandler from "./handlers/command";
 import interactionHandler from "./handlers/interaction";
-import syncHandler, { currentSong, currentStartedAt, nextSong, nextStartsAt, serverOnline, submitters } from "./handlers/sync";
+import syncHandler, { currentSong, currentStartedAt, history, nextSong, nextStartsAt, serverOnline, submitters } from "./handlers/sync";
 import presenceHandler from "./handlers/presence";
-import rejoinHandler from "./handlers/rejoin";
-import voiceStateHandler from "./handlers/voice";
-import { history } from "./handlers/player";
 
 export const client = new RadioClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -30,9 +27,6 @@ client.once("ready", async () => {
 
   client.sync.hub = await syncHandler();
   await presenceHandler();
-
-  await rejoinHandler();
-  await voiceStateHandler();
 
   console.log("uwu radio is ready.");
 });
