@@ -2,6 +2,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { client } from "..";
 import { Song, Submitter } from "../def";
+import { ensureEmojiExists } from "./presence";
 
 const api = (route: string) => new URL(route, client.config.endpoint).href;
 export const currentTime = () => ~~(Date.now() / 1000);
@@ -36,6 +37,7 @@ export default async function syncHandler() {
   let scheduleTimeout: NodeJS.Timeout;
   function scheduleNext(startTime: number) {
     if (nextSong.value === undefined) return;
+    ensureEmojiExists(nextSong.value!);
     
     clearTimeout(scheduleTimeout);
     scheduleTimeout = setTimeout(() => {
@@ -45,7 +47,7 @@ export default async function syncHandler() {
       nextStartsAt.value = undefined;
 
       history.unshift([currentSong.value!, currentStartedAt.value!]);
-      if (history.length > 10) history.pop();    
+      if (history.length > 10) history.pop();
     }, 1000 * (startTime - currentTime()));
   }
 
@@ -66,6 +68,8 @@ export default async function syncHandler() {
     nextSong.value = next;
     nextStartsAt.value = nextStart;
 
+    history.unshift([currentSong.value!, currentStartedAt.value!]);
+    if (history.length > 10) history.pop();
     if (nextStartsAt.value! - currentTime() < 30)
       scheduleNext(nextStartsAt.value!);
   });
