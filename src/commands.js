@@ -1,20 +1,38 @@
-import { ApplicationCommandTypes, InteractionTypes } from "oceanic.js";
+import {
+	ApplicationCommandTypes,
+	ApplicationIntegrationTypes,
+	InteractionContextTypes,
+	InteractionTypes,
+} from "oceanic.js";
 import { client } from "./client.js";
 import { probeDuration } from "./duration.js";
 import { ensureEmojiExists } from "./emojis.js";
 import { currentTime, syncClient } from "./sync.js";
 
 client.on("ready", () => {
+	const common = {
+		type: ApplicationCommandTypes.CHAT_INPUT,
+		integrationTypes: [
+			ApplicationIntegrationTypes.GUILD_INSTALL,
+			ApplicationIntegrationTypes.USER_INSTALL,
+		],
+		contexts: [
+			InteractionContextTypes.GUILD,
+			InteractionContextTypes.BOT_DM,
+			InteractionContextTypes.PRIVATE_CHANNEL,
+		],
+	};
+
 	client.application.bulkEditGlobalCommands([
 		{
-			type: ApplicationCommandTypes.CHAT_INPUT,
 			name: "np",
 			description: "Now playing",
+			...common,
 		},
 		{
-			type: ApplicationCommandTypes.CHAT_INPUT,
 			name: "history",
 			description: "History of played songs",
+			...common,
 		},
 	]);
 });
