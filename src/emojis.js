@@ -7,16 +7,24 @@ const { XXHash3 } = xxhashAddon;
 
 const albumMap = new Map();
 async function processNewEmoji(hash, url, ctx) {
-	const buf = await fetch(url).then((r) => r.arrayBuffer());
-	const processed = await sharp(buf)
-		.resize(128, 128, { fit: "contain" })
-		.toFormat("jpeg")
-		.toBuffer();
-	const emoji = await client.application.createEmoji({
-		name: `g_${hash}`,
-		image: processed,
-	});
-	console.log(`(emoji) processed new emoji for ${ctx}`);
+	let emoji;
+	try {
+		const req = await fetch(url);
+		if (!req.ok) throw new Error(`failed to fetch: ${url}`);
+		const buf = await req.arrayBuffer();
+		const processed = await sharp(buf)
+			.resize(128, 128, { fit: "contain" })
+			.toFormat("jpeg")
+			.toBuffer();
+		emoji = await client.application.createEmoji({
+			name: `g_${hash}`,
+			image: processed,
+		});
+		console.log(`(emoji) processed new emoji for ${ctx}`);
+	} catch (e) {
+		console.log(`(emoji) something went wrong processing emoji for ${ctx}`, e);
+		emoji = albumMap.get("missing");
+	}
 	albumMap.set(hash, emoji);
 	return emoji;
 }
