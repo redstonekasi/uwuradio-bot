@@ -23,6 +23,8 @@ client.on("interactionCreate", async (interaction) => {
 	if (interaction.type !== InteractionTypes.APPLICATION_COMMAND) return;
 	if (interaction.data.type !== ApplicationCommandTypes.CHAT_INPUT) return;
 
+	await interaction.defer();
+
 	let embed;
 	switch (interaction.data.name) {
 		case "history":
@@ -33,7 +35,7 @@ client.on("interactionCreate", async (interaction) => {
 			break;
 	}
 
-	interaction.reply({ embeds: [embed] });
+	interaction.editOriginal({ embeds: [embed] });
 });
 
 // very basic escaping for anything that could possibly appear
