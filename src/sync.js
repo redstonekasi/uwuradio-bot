@@ -31,7 +31,7 @@ class SyncClient extends EventEmitter {
 		this.#base = base;
 		this.#historySize = historySize;
 
-		let hub = this.#hub = new HubConnectionBuilder()
+		this.#hub = new HubConnectionBuilder()
 			.withAutomaticReconnect({
 				nextRetryDelayInMilliseconds: () => 10000,
 			})
@@ -44,10 +44,10 @@ class SyncClient extends EventEmitter {
 			})
 			.build();
 
-		hub.on("BroadcastNext", this.#broadcastNext.bind(this));
-		hub.on("ReceiveState", this.#receiveState.bind(this));
+		this.#hub.on("BroadcastNext", this.#broadcastNext.bind(this));
+		this.#hub.on("ReceiveState", this.#receiveState.bind(this));
 
-		hub.onreconnected(() => hub.invoke("RequestState"));
+		this.#hub.onreconnected(() => this.#hub.invoke("RequestState"));
 	}
 
 	async start() {

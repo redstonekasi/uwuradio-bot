@@ -13,7 +13,7 @@ async function processNewEmoji(hash, url, ctx) {
 		.toFormat("jpeg")
 		.toBuffer();
 	const emoji = await client.application.createEmoji({
-		name: "g_" + hash,
+		name: `g_${hash}`,
 		image: processed,
 	});
 	console.log(`(emoji) processed new emoji for ${ctx}`);

@@ -14,4 +14,4 @@ export const probeDuration = (url) =>
 		proc.stdout.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
 		proc.stdout.on("error", (err) => reject(err));
 		proc.stdout.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-	}).then((v) => parseFloat(v));
+	}).then((v) => Number.parseFloat(v));

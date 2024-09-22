@@ -89,7 +89,10 @@ async function np() {
 
 	const at = currentTime() - syncClient.currentStartedAt;
 	let duration = durationCache.get(song.dlUrl);
-	if (!duration) durationCache.set(song.dlUrl, duration = await probeDuration(song.dlUrl));
+	if (!duration) {
+		duration = await probeDuration(song.dlUrl);
+		durationCache.set(song.dlUrl, duration);
+	}
 	const bar = `\`[${"=".repeat(at / duration * 24).padEnd(24)}]\``;
 	embed.fields.push({
 		name: "Progress",
